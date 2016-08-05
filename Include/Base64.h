@@ -4,7 +4,7 @@
 // Description:	Module contains Base64 encoding and decoding algorithms.
 //				Algorithms accept string as an input and return string as a
 //				result. To work with unsigned chars in general additional
-//				(but very simple) wrappers are required.
+//				(yet very simple) wrappers are required.
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 
