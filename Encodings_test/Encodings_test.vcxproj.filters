@@ -23,5 +23,8 @@
     <ClInclude Include="..\Include\Base64.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\Md5.h">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

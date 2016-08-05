@@ -32,7 +32,10 @@ namespace Base64
 		"wxyz0123"
 		"456789+/";
 
-	// Base64 decoding table, generated as a reversed encoding table
+	// Magic const that represents the number of trimmed symbols in the g_base64DecodeTable
+	static const int g_base64DecodeTableOffset = 43;
+
+	// Base64 decoding table, generated as a reversed encoding table and trimmed
 	static std::vector<int> g_base64DecodeTable =
 	{
 		62, 0, 0, 0, 63, 52, 53, 54,
@@ -111,19 +114,31 @@ namespace Base64
 		int i;
 		for (i = 0; i < length4; ++i)
 		{
-			res.push_back((g_base64DecodeTable[pInput[i * 4 + 0] - 43] << 2) | (g_base64DecodeTable[pInput[i * 4 + 1] - 43] >> 4));
-			res.push_back((g_base64DecodeTable[pInput[i * 4 + 1] - 43] << 4) | (g_base64DecodeTable[pInput[i * 4 + 2] - 43] >> 2));
-			res.push_back((g_base64DecodeTable[pInput[i * 4 + 2] - 43] << 6) | (g_base64DecodeTable[pInput[i * 4 + 3] - 43]));
+			res.push_back((
+				g_base64DecodeTable[pInput[i * 4 + 0] - g_base64DecodeTableOffset] << 2) |
+				(g_base64DecodeTable[pInput[i * 4 + 1] - g_base64DecodeTableOffset] >> 4));
+			res.push_back((
+				g_base64DecodeTable[pInput[i * 4 + 1] - g_base64DecodeTableOffset] << 4) |
+				(g_base64DecodeTable[pInput[i * 4 + 2] - g_base64DecodeTableOffset] >> 2));
+			res.push_back((
+				g_base64DecodeTable[pInput[i * 4 + 2] - g_base64DecodeTableOffset] << 6) |
+				(g_base64DecodeTable[pInput[i * 4 + 3] - g_base64DecodeTableOffset]));
 		}
 
 		if (pInput[pInput.size() - 2] == '=')
 		{
-			res.push_back((g_base64DecodeTable[pInput[i * 4 + 0] - 43] << 2) | (g_base64DecodeTable[pInput[i * 4 + 1] - 43] >> 4));
+			res.push_back((
+				g_base64DecodeTable[pInput[i * 4 + 0] - g_base64DecodeTableOffset] << 2) |
+				(g_base64DecodeTable[pInput[i * 4 + 1] - g_base64DecodeTableOffset] >> 4));
 		}
 		else if (pInput[pInput.size() - 1] == '=')
 		{
-			res.push_back((g_base64DecodeTable[pInput[i * 4 + 0] - 43] << 2) | (g_base64DecodeTable[pInput[i * 4 + 1] - 43] >> 4));
-			res.push_back((g_base64DecodeTable[pInput[i * 4 + 1] - 43] << 4) | (g_base64DecodeTable[pInput[i * 4 + 2] - 43] >> 2));
+			res.push_back((
+				g_base64DecodeTable[pInput[i * 4 + 0] - g_base64DecodeTableOffset] << 2) |
+				(g_base64DecodeTable[pInput[i * 4 + 1] - g_base64DecodeTableOffset] >> 4));
+			res.push_back((
+				g_base64DecodeTable[pInput[i * 4 + 1] - g_base64DecodeTableOffset] << 4) |
+				(g_base64DecodeTable[pInput[i * 4 + 2] - g_base64DecodeTableOffset] >> 2));
 		}
 
 		return res;
