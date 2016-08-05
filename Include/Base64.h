@@ -1,7 +1,10 @@
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 // Module:		Base64
 // Author:		Anton Egorov, dohxehapo@gmail.com
-// Description:	TODO:
+// Description:	Module contains Base64 encoding and decoding algorithms.
+//				Algorithms accept string as an input and return string as a
+//				result. To work with unsigned chars in general additional
+//				(but very simple) wrappers are required.
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 
@@ -18,6 +21,7 @@
 namespace Base64
 {
 
+	// Base64 encoding table
 	static std::string g_base64EncodeTable =
 		"ABCDEFGH"
 		"IJKLMNOP"
@@ -28,6 +32,7 @@ namespace Base64
 		"wxyz0123"
 		"456789+/";
 
+	// Base64 decoding table, generated as a reversed encoding table
 	static std::vector<int> g_base64DecodeTable =
 	{
 		62, 0, 0, 0, 63, 52, 53, 54,
@@ -43,6 +48,9 @@ namespace Base64
 	};
 
 
+	// Encodes the given string with the Base64 encoder and returns the result
+	// Params:
+	// [in] const std::string & pInput - string to encode
 	static std::string Base64_Encode(const std::string &pInput)
 	{
 		// We will process 3 bytes at a time. The remainder will be appended in the end
@@ -82,6 +90,9 @@ namespace Base64
 	}
 
 
+	// Decodes the given string with the Base64 decoder and returns the result
+	// Params:
+	// [in] const std::string & pInput - string to decode
 	static std::string Base64_Decode(const std::string &pInput)
 	{
 		// We will process 4 bytes at a time. Input base64 string must be multiple of 4
