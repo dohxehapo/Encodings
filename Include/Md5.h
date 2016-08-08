@@ -11,8 +11,10 @@
 #define ENCODINGS_MD5_H
 
 
+#include <string>
 #include <vector>
 #include <stdint.h>
+#include <iomanip>
 
 
 namespace Md5
@@ -82,7 +84,7 @@ namespace Md5
 	}
 
 
-	static std::vector<int8_t> Md5_Encode(const std::vector<uint8_t> &pInput)
+	static std::string Md5_Encode(const std::vector<uint8_t> &pInput)
 	{
 		std::vector<uint8_t> input(pInput);
 
@@ -108,30 +110,32 @@ namespace Md5
 
 		// Appending the input length
 
-		uint64_t inputLenght = pInput.size();
-		input.push_back((unsigned char)((inputLenght & 0x00000000FF000000) >> 6));
-		input.push_back((unsigned char)((inputLenght & 0x0000000000FF0000) >> 4));
-		input.push_back((unsigned char)((inputLenght & 0x000000000000FF00) >> 2));
-		input.push_back((unsigned char)((inputLenght & 0x00000000000000FF) >> 0));
-		input.push_back((unsigned char)((inputLenght & 0xFF00000000000000) >> 14));
-		input.push_back((unsigned char)((inputLenght & 0x00FF000000000000) >> 12));
-		input.push_back((unsigned char)((inputLenght & 0x0000FF0000000000) >> 10));
-		input.push_back((unsigned char)((inputLenght & 0x000000FF00000000) >> 8));
+		uint64_t inputLenght = pInput.size() * 8;
+		input.push_back((unsigned char)((inputLenght & 0x00000000000000FF)));
+		input.push_back((unsigned char)((inputLenght & 0x000000000000FF00) >> 8));
+		input.push_back((unsigned char)((inputLenght & 0x0000000000FF0000) >> 16));
+		input.push_back((unsigned char)((inputLenght & 0x00000000FF000000) >> 24));
+		input.push_back((unsigned char)((inputLenght & 0x000000FF00000000) >> 32));
+		input.push_back((unsigned char)((inputLenght & 0x0000FF0000000000) >> 40));
+		input.push_back((unsigned char)((inputLenght & 0x00FF000000000000) >> 48));
+		input.push_back((unsigned char)((inputLenght & 0xFF00000000000000) >> 56));
 
 		// Buffer initialization
 
-		uint32_t A = 0x67452301; // Magic initialization consts
-		uint32_t B = 0xEFCDAB89; //
-		uint32_t C = 0x98BADCFE; //
-		uint32_t D = 0x10325476; //
+		uint32_t sumA = 0x67452301; // Magic initialization consts
+		uint32_t sumB = 0xEFCDAB89; //
+		uint32_t sumC = 0x98BADCFE; //
+		uint32_t sumD = 0x10325476; //
 
-		uint32_t sumA = A;
-		uint32_t sumB = B;
-		uint32_t sumC = C;
-		uint32_t sumD = D;
+		uint32_t A, B, C, D;
 
 		for (int i = 0; i < length64; ++i)
 		{
+			A = sumA;
+			B = sumB;
+			C = sumC;
+			D = sumD;
+
 			std::vector<uint8_t> temp(input.begin() + i * 64, input.begin() + (i + 1) * 64);
 			std::vector<uint32_t> blocks = GetIntBlocks(temp);
 
@@ -221,28 +225,27 @@ namespace Md5
 			sumD += D;
 		}
 
-		std::vector<int8_t> res;
-		res.reserve(16);
-
-		res.push_back((sumA & 0xFF000000) >> 24);
-		res.push_back((sumA & 0x00FF0000) >> 16);
-		res.push_back((sumA & 0x0000FF00) >> 8);
-		res.push_back((sumA & 0x000000FF));
-
-		res.push_back((sumB & 0xFF000000) >> 24);
-		res.push_back((sumB & 0x00FF0000) >> 16);
-		res.push_back((sumB & 0x0000FF00) >> 8);
-		res.push_back((sumB & 0x000000FF));
-
-		res.push_back((sumC & 0xFF000000) >> 24);
-		res.push_back((sumC & 0x00FF0000) >> 16);
-		res.push_back((sumC & 0x0000FF00) >> 8);
-		res.push_back((sumC & 0x000000FF));
-
-		res.push_back((sumD & 0xFF000000) >> 24);
-		res.push_back((sumD & 0x00FF0000) >> 16);
-		res.push_back((sumD & 0x0000FF00) >> 8);
-		res.push_back((sumD & 0x000000FF));
+		// Encode the result digest to a hex string.
+		// So much std::setw because it is not sticky
+		std::stringstream sstream;
+		sstream << std::setfill('0') << std::setw(2) << std::hex << 
+			((sumA & 0x000000FF)) << std::setw(2) <<
+			((sumA & 0x0000FF00) >> 8) << std::setw(2) <<
+			((sumA & 0x00FF0000) >> 16) << std::setw(2) <<
+			((sumA & 0xFF000000) >> 24) << std::setw(2) <<
+			((sumB & 0x000000FF)) << std::setw(2) <<
+			((sumB & 0x0000FF00) >> 8) << std::setw(2) <<
+			((sumB & 0x00FF0000) >> 16) << std::setw(2) <<
+			((sumB & 0xFF000000) >> 24) << std::setw(2) <<
+			((sumC & 0x000000FF)) << std::setw(2) <<
+			((sumC & 0x0000FF00) >> 8) << std::setw(2) <<
+			((sumC & 0x00FF0000) >> 16) << std::setw(2) <<
+			((sumC & 0xFF000000) >> 24) << std::setw(2) <<
+			((sumD & 0x000000FF)) << std::setw(2) <<
+			((sumD & 0x0000FF00) >> 8) << std::setw(2) <<
+			((sumD & 0x00FF0000) >> 16) << std::setw(2) <<
+			((sumD & 0xFF000000) >> 24);
+		std::string res(sstream.str());
 
 		return res;
 	}
