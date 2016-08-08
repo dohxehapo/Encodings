@@ -1,8 +1,9 @@
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 // Module:		MD5
 // Author:		Anton Egorov, dohxehapo@gmail.com
-// Description:	Module contains MD5 encoding algorithm.
-//				TODO:
+// Description:	Module contains MD5 encoding algorithm and static tables used
+//				in calculations. Algorithm accepts vector of bytes as an input
+//				and returns the hex-formatted string as a result.
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 #pragma once
