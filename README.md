@@ -11,7 +11,7 @@ Base64 algorithm is implemented in the Base64.h header file. This file contains 
 
 ## Md5
 
-Md5 algorithm is not implemented yet.
+Md5 algorithm is implemented in the Md5.h header file. This file contains static encoding tables used in calculations and encoding fuction: Md5_Encode. This function accepts vector of bytes as an input and returns the hex-formatted string as a result.
 
 <br>
 Anton Egorov, 2016
